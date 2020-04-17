@@ -8,18 +8,46 @@
 
 <body>
     <div class="container">
-        <article class="clock">
-            <div class="hours-container">
-                <div class="hours"></div>
+        <div class="analog-clock">
+            <div class="analog-hours-container">
+                <div class="analog-hours"></div>
             </div>
-            <div class="minutes-container">
-                <div class="minutes"></div>
+            <div class="analog-minutes-container">
+                <div class="analog-minutes"></div>
             </div>
-            <div class="seconds-container">
-                <div class="seconds"></div>
+            <div class="analog-seconds-container">
+                <div class="analog-seconds"></div>
             </div>
             <div class="center"></div>
-        </article>
+        </div>
+        <div class="digital-clock">
+            <div class="digital-hours">
+                <div class="first">
+                    <div class="number">0</div>
+                </div>
+                <div class="second">
+                    <div class="number">0</div>
+                </div>
+            </div>
+            <div class="tick">:</div>
+            <div class="digital-minutes">
+                <div class="first">
+                    <div class="number">0</div>
+                </div>
+                <div class="second">
+                    <div class="number">0</div>
+                </div>
+            </div>
+            <div class="tick">:</div>
+            <div class="digital-seconds">
+                <div class="first">
+                    <div class="number">0</div>
+                </div>
+                <div class="second infinite">
+                    <div class="number">0</div>
+                </div>
+            </div>
+        </div>
     </div>
 
 
@@ -35,18 +63,18 @@
             transform: translate(-50%, -50%);
         }
 
-        .clock {
+        .analog-clock {
             border: 0.5em solid #eee;
             border-radius: 50%;
             background: #fff url(/images/ios_clock.svg) no-repeat center;
             background-size: 88%;
-            display: inline-block;
             height: 36em;
             position: relative;
             width: 36em;
+            justify-content: center;
         }
 
-        .clock.simple:after {
+        .analog-clock.simple:after {
             background: #000;
             border-radius: 50%;
             content: "";
@@ -72,9 +100,9 @@
             border-radius: 100%;
         }
 
-        .minutes-container,
-        .hours-container,
-        .seconds-container {
+        .analog-minutes-container,
+        .analog-hours-container,
+        .analog-seconds-container {
             position: absolute;
             top: 0;
             right: 0;
@@ -82,7 +110,7 @@
             left: 0;
         }
 
-        .hours {
+        .analog-hours {
             background: #000;
             content: "";
             height: 20%;
@@ -95,7 +123,7 @@
             transition-timing-function: cubic-bezier(0.1, 2.7, 0.58, 1);
         }
 
-        .minutes {
+        .analog-minutes {
             background: #000;
             content: "";
             height: 40%;
@@ -108,7 +136,7 @@
             transition-timing-function: cubic-bezier(0.1, 2.7, 0.58, 1);
         }
 
-        .seconds {
+        .analog-seconds {
             background: red;
             height: 45%;
             left: 49.5%;
@@ -120,25 +148,68 @@
             transition: all 0.05s;
             transition-timing-function: cubic-bezier(0.1, 2.7, 0.58, 1);
         }
+
+        .digital-clock {
+            height: 20vh;
+            color: white;
+            font-size: 22vh;
+            font-family: sans-serif;
+            line-height: 20.4vh;
+            display: flex;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .digital-clock::after {
+            bottom: 0;
+            background: linear-gradient(to bottom, transparent, black);
+        }
+
+        .digital-clock>div {
+            display: flex;
+        }
+
+        .tick {
+            line-height: 17vh;
+        }
+
+        .tick-hidden {
+            opacity: 0;
+        }
+
+        .move {
+            animation: move linear 1s infinite;
+        }
+
+        @keyframes move {
+            from {
+                transform: translateY(0vh);
+            }
+
+            to {
+                transform: translateY(-20vh);
+            }
+        }
     </style>
 
     <script>
-        const secondHand = document.querySelector('.seconds');
-        const minuteHand = document.querySelector('.minutes');
-        const hourHand = document.querySelector('.hours');
-        const allHands = document.querySelectorAll('.hours, .minutes, .seconds')
 
-        function setTime() {
+
+        function setAnalogTime() {
+
+            const secondHand = document.querySelector('.analog-seconds');
+            const minuteHand = document.querySelector('.analog-minutes');
+            const hourHand = document.querySelector('.analog-hours');
+            const allHands = document.querySelectorAll('.analog-hours, .analog-minutes, .analog-seconds')
+
             const now = new Date();
             const seconds = now.getSeconds();
             const minutes = now.getMinutes();
             const hours = now.getHours();
-            console.log(seconds);
 
             const secondsDegrees = ((seconds / 60) * 360);
             const minutesDegrees = ((minutes / 60) * 360) + ((seconds / 60) * 6);
             const hoursDegrees = ((hours / 12) * 360) + ((minutes / 60) * 30);
-
             if (secondsDegrees === 0) {
                 allHands.forEach(hand => hand.style.transition = 'none')
             } else {
@@ -151,9 +222,84 @@
 
         }
 
-        setInterval(setTime, 1000);
+        function setDigitalTime(seconds, minutes, hours) {
+            const hoursContainer = document.querySelector('.digital-hours')
+            const minutesContainer = document.querySelector('.digital-minutes')
+            const secondsContainer = document.querySelector('.digital-seconds')
+            const tickElements = Array.from(document.querySelectorAll('.tick'))
 
-        setTime();
+            const last = new Date(0)
+            last.setUTCHours(-1)
+
+            const tickState = true
+
+            const now = new Date
+
+            const lastHours = last.getHours().toString()
+            const nowHours = now.getHours().toString()
+            if (lastHours !== nowHours) {
+                updateContainer(hoursContainer, nowHours)
+            }
+
+            const lastMinutes = last.getMinutes().toString()
+            const nowMinutes = now.getMinutes().toString()
+            if (lastMinutes !== nowMinutes) {
+                updateContainer(minutesContainer, nowMinutes)
+            }
+
+            const lastSeconds = last.getSeconds().toString()
+            const nowSeconds = now.getSeconds().toString()
+            if (lastSeconds !== nowSeconds) {
+                updateContainer(secondsContainer, nowSeconds)
+            }
+
+            last = now
+        }
+
+        function tick() {
+            tickElements.forEach(t => t.classList.toggle('tick-hidden'))
+        }
+
+        function updateContainer(container, newTime) {
+            const time = newTime.split('')
+
+            if (time.length === 1) {
+                time.unshift('0')
+            }
+
+
+            const first = container.firstElementChild
+            if (first.lastElementChild.textContent !== time[0]) {
+                updateNumber(first, time[0])
+            }
+
+            const last = container.lastElementChild
+            if (last.lastElementChild.textContent !== time[1]) {
+                updateNumber(last, time[1])
+            }
+        }
+
+        function updateNumber(element, number) {
+            const second = element.lastElementChild.cloneNode(true)
+            second.textContent = number
+
+            element.appendChild(second)
+            element.classList.add('move')
+
+            setTimeout(function () {
+                element.classList.remove('move')
+            }, 990)
+            setTimeout(function () {
+                element.removeChild(element.firstElementChild)
+            }, 990)
+        }
+
+
+        setInterval(setAnalogTime, 1000);
+        setInterval(setDigitalTime, 1000);
+
+        setDigitalTime();
+        setAnalogTime();
 
     </script>
 </body>
