@@ -152,21 +152,34 @@
       <p>Motion</p>
     </div>
   </div>
+  <audio src="media/sounds/boom.wav"></audio>
   <script>
   const panels = document.querySelectorAll('.panel')
 
-  function toggleOpen() {
-    this.classList.toggle('open');
+  function play() {
+    const audio = document.querySelector('audio');
+    if (!audio) return;
+    audio.currentTime = 0;
+    audio.play();
+  }
+
+  function toggleOpen(e) {
+    e.classList.toggle('open');
   }
 
   function toggleActive(e) {
-    console.log(e);
     if (e.propertyName.includes('flex')) {
       this.classList.toggle('open-active');
     }
   }
 
-  panels.forEach(panel => panel.addEventListener('click', toggleOpen))
+  [...panels].forEach(panel => {
+    panel.addEventListener('click', () => {
+      play();
+      toggleOpen(panel);
+    });
+  });
+
   panels.forEach(panel => panel.addEventListener('transitionend', toggleActive))
   </script>
 </body>
