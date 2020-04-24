@@ -46,12 +46,12 @@
       hue = 0;
     }
 
-    if (ctx.lineWidth >= 75 || ctx.lineWidth <= 1) {
+    if (ctx.lineWidth >= 100 || ctx.lineWidth <= 1) {
       direction = !direction;
     }
     if (direction) {
       ctx.lineWidth++;
-    } else{
+    } else {
       ctx.lineWidth--;
     }
   }
