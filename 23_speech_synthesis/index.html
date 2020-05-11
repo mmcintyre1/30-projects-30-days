@@ -69,7 +69,6 @@ You’re fucking dead, kiddo.</textarea>
     }
 
     function setOption() {
-      console.log(this.name, this.value);
       msg[this.name] = this.value;
       toggle();
     }
@@ -79,6 +78,7 @@ You’re fucking dead, kiddo.</textarea>
     options.forEach(option => option.addEventListener('change', setOption));
     speakButton.addEventListener('click', toggle);
     stopButton.addEventListener('click', () => toggle(false));
+
   </script>
 
 </body>
