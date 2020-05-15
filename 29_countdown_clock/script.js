@@ -4,6 +4,9 @@ const endTime = document.querySelector('.display__end-time')
 const timerAdds = document.querySelectorAll('[data-time]')
 
 function timer(seconds) {
+  // call this to clear any previous countdowns
+  clearInterval(countdown);
+
   const now = Date.now();
   const then = now + seconds * 1000;
   displayTimeLeft(seconds)
