@@ -51,7 +51,7 @@ timerAdds.forEach(timerAdd => timerAdd.addEventListener('click', timerStart))
 document.customForm.addEventListener('submit', function (e) {
   e.preventDefault()
   const mins = this.minutes.value
-  if (isNaN(mins)) {
+  if (mins && isNaN(mins)) {
     alert(`${mins} is not a number.`)
   } else {
     timer(parseInt(mins) * 60)
